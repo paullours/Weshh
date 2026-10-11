@@ -33,6 +33,7 @@ Project setup only: application features are not implemented yet.
 
 ```text
 Weshh/
+    .gitattributes
     main.py
     requirements.txt
     README.md
@@ -45,6 +46,8 @@ Weshh/
 The CSV files are unchanged copies from the supplied PP4AI project archive.
 Their final column is `target`; missing feature values are empty fields.
 Keep the original CSVs unchanged. Later features will clean data in memory.
+`.gitattributes` disables Git's line-ending conversion for the supplied CSVs,
+so a Windows checkout preserves their original bytes.
 Run commands from the project folder; no personal absolute paths are required.
 
 ## Course style and collaboration

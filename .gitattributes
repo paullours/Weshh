@@ -1,0 +1,2 @@
+# Preserve the supplied CSV files byte-for-byte on every platform.
+data/*.csv -text
