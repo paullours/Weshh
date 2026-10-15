@@ -49,6 +49,7 @@ Weshh/
     data_utils.py
     data_preparation.py
     model_selection.py
+    model_training.py
     requirements.txt
     README.md
     data/
@@ -119,6 +120,33 @@ For Issue #7, call `model = model_choice()` before
 object, not a name or menu number. The four return values remain
 `X_train, X_test, y_train, y_test`. `model_selection.model_choice()` returns
 Logistic Regression, Decision Tree or KNN through its existing terminal prompt.
+
+Issue #7 adds `model_training.train_and_evaluate(model, X_train, X_test,
+y_train, y_test, dataset_name)`. Pass the selected classifier and the four arrays
+from `split_and_clean_data(X, y, model)`. It fits only on training data, predicts
+test labels, and calculates `accuracy_score(y_test, predictions)`: the fraction
+of test observations classified correctly. It prints the dataset, readable model
+name and percentage, and returns the numerical accuracy. Preparation already
+prints training/test counts, so the new function does not repeat them. Empty or
+misaligned sets and scikit-learn `ValueError` failures print an explanation and
+return `None` without reporting an accuracy. Other errors propagate.
+
+Issue #7 verification (Python 3.13.0, pandas 3.0.6, scikit-learn 1.9.1), using
+the supplied CSVs and existing classifier settings:
+
+| Dataset | Training/test rows | Logistic Regression | Decision Tree | KNN |
+| --- | --- | ---: | ---: | ---: |
+| Iris | 120/30 | 96.67% | 90.00% | 93.33% |
+| Wine | 142/36 | 97.22% | 94.44% | 97.22% |
+| Breast Cancer | 455/114 | 98.25% | 92.11% | 95.61% |
+
+All nine experiments passed twice without warnings. Returned scores matched
+independent test accuracy, stayed within 0-1, and repeated exactly. Checks verified
+training-only fitting and preprocessing, invalid-data handling, module imports,
+existing menus and the unchanged `main.py` demonstration. Existing preprocessing
+and classifier code remained unchanged; CSV bytes still matched the supplied ZIP.
+The verification script stayed outside the repository. Full interactive
+integration and handling preparation failures remain for Issue #8.
 
 Cell numbers below are zero-based positions in Paul's personal notebooks, not
 execution numbers. Examples included in a notebook do not prove that Paul
