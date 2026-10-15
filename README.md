@@ -82,6 +82,12 @@ Lorenzo's PRs. Both students must understand and explain the whole application.
 the three names, and displays a summary only if loading returned a DataFrame.
 This is a temporary demonstration, without an interactive menu.
 
+Issue #6 adds standalone menu helpers: `data_preparation.dataset_choice()` accepts
+1-3 and returns `iris`, `wine` or `breast_cancer`; `main.ask_run_again()` accepts
+yes/no (ignoring case and surrounding whitespace) and returns `True`/`False`.
+Invalid answers retry. Importing `main` does not run the demonstration; running
+`python main.py` still does. The helpers are not connected to an application loop.
+
 ## Dataset functions and course examples
 
 `DATASETS` maps the supported names `iris`, `wine`, and `breast_cancer` to their
@@ -237,7 +243,7 @@ Historical Issue #2 status of the official Section 11 checklist (all 14 checks):
 Limitations: run from the repository root; the summary function expects a
 DataFrame validated by the loader. `main.py` only inspects the datasets; it does
 not call preparation or classifier selection. The full training/evaluation
-workflow and repeat/exit handling remain for later Issues. Preparation expects
+workflow and integration of repeat/exit handling remain for later Issues. Preparation expects
 usable numeric features and sufficient data for stratification. The loader
 checks target presence and missingness; it does not perform a general CSV schema
 audit. The three original supplied files remain the only supported datasets.
