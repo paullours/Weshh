@@ -2,11 +2,11 @@
 
 University project by **Paul and Lorenzo**.
 
-The finished application will let a user select one of three supplied datasets
-and one of three classification models, then train and evaluate the model.
-Issues #2–#4 provide dataset inspection, preparation and classifier selection. Running
-`main.py` demonstrates the summaries for all three supplied datasets before
-cleaning. The complete interactive training and evaluation workflow is still pending.
+Run `python main.py` to select one of three supplied datasets, inspect its summary,
+select one of three classifiers, and see its test accuracy. Enter 1-3 at each
+selection menu, then yes to start another experiment or no to exit. Invalid
+answers retry; handled file, preparation and training failures also lead to the
+repeat/exit question.
 
 ## Install and run
 
@@ -68,7 +68,7 @@ Run commands from the project folder; no personal absolute paths are required.
 ## Course style and collaboration
 
 Our primary reference is Paul's personal `Copie de PP4AI_L1.ipynb` through
-`Copie de PP4AI_L4.ipynb`, including the completed exercises and lesson examples.
+`Copie de PP4AI_L4.ipynb`, following the professor's explanations and examples.
 Use short functions, variables, lists, dictionaries, conditions, loops,
 return values, basic exception handling, pandas and the required scikit-learn
 operations. Explain necessary unfamiliar techniques before implementing them.
@@ -79,15 +79,15 @@ Never push directly to `main`. The other student must review and approve before
 merging: Lorenzo (`gangio25`) reviews Paul's PRs; Paul (`paullours`) reviews
 Lorenzo's PRs. Both students must understand and explain the whole application.
 
-`main.py` imports the dictionary and functions from `data_utils.py`, loops over
-the three names, and displays a summary only if loading returned a DataFrame.
-This is a temporary demonstration, without an interactive menu.
+`main()` connects the existing loading, summary, preparation, selection and
+evaluation functions in one experiment loop. Each experiment selects a fresh
+classifier. The `if __name__ == "__main__":` guard calls `main()` only when the
+file is executed directly; importing it does not start the application.
 
 Issue #6 adds standalone menu helpers: `data_preparation.dataset_choice()` accepts
 1-3 and returns `iris`, `wine` or `breast_cancer`; `main.ask_run_again()` accepts
 yes/no (ignoring case and surrounding whitespace) and returns `True`/`False`.
-Invalid answers retry. Importing `main` does not run the demonstration; running
-`python main.py` still does. The helpers are not connected to an application loop.
+Invalid answers retry. Issue #8 connects these helpers to the application loop.
 
 ## Dataset functions and course examples
 
@@ -145,8 +145,8 @@ independent test accuracy, stayed within 0-1, and repeated exactly. Checks verif
 training-only fitting and preprocessing, invalid-data handling, module imports,
 existing menus and the unchanged `main.py` demonstration. Existing preprocessing
 and classifier code remained unchanged; CSV bytes still matched the supplied ZIP.
-The verification script stayed outside the repository. Full interactive
-integration and handling preparation failures remain for Issue #8.
+The verification script stayed outside the repository. These Issue #7 checks
+preceded Issue #8's interactive integration checks.
 
 Cell numbers below are zero-based positions in Paul's personal notebooks, not
 execution numbers. Examples included in a notebook do not prove that Paul
@@ -187,11 +187,23 @@ the error details so we can include them in the message, as in L4 cell 50.
 There is no catch-all exception handler.
 
 When a CSV is missing, the loader names its path, explains that it was not found,
-and returns `None`. The demonstration skips its summary, continues to the other
-datasets, and finishes normally. A header-only CSV and missing target labels
+and returns `None`. The application skips preparation and training, then asks
+whether to run another experiment. A header-only CSV and missing target labels
 also produce clear messages rather than an invalid summary.
 
 ## Validation and AI assistance
+
+Issue #8 integration checks (Python 3.13.0, pandas 3.0.6, scikit-learn 1.9.1):
+all nine combinations passed through `python main.py` with complete summaries,
+training/test counts and test accuracy, without warnings; scores matched the
+Issue #7 table above. Invalid numbers, text, empty and whitespace answers retried.
+Three different experiments ran in one session with a fresh classifier each time.
+Temporary copies verified missing/unreadable CSVs, invalid/insufficient data,
+training failures, recovery and clean exit, without invented accuracy. Imports,
+unchanged helpers/settings, training-only preprocessing and test-only evaluation
+passed; original CSV bytes still match Git and the supplied ZIP. `git diff --check`
+passed. The test script remained outside the repository. Final submission ZIP
+validation remains for Issue #9.
 
 Setup checks performed on Windows using Python 3.13.0 in a temporary environment:
 
@@ -238,7 +250,7 @@ Integration cleanup checks (Python 3.13.0, pandas 3.0.6, scikit-learn 1.9.1):
 names, file errors, complete summaries, reproducible training-only preprocessing,
 existing prompt retries and `main.py`. All nine dataset/model smoke tests trained
 and predicted without warnings. The CSVs still match the original ZIP. These
-checks exercise functions independently; the final interactive workflow is pending.
+checks exercised functions independently, before Issue #8's interactive workflow.
 
 Issue #5 checks (same Python and library versions): all nine dataset/model
 combinations trained and predicted without warnings. Independent numerical
@@ -269,9 +281,7 @@ Historical Issue #2 status of the official Section 11 checklist (all 14 checks):
 | 14. Students can explain code and results | Explanation provided; Paul and Lorenzo must demonstrate understanding |
 
 Limitations: run from the repository root; the summary function expects a
-DataFrame validated by the loader. `main.py` only inspects the datasets; it does
-not call preparation or classifier selection. The full training/evaluation
-workflow and integration of repeat/exit handling remain for later Issues. Preparation expects
+DataFrame validated by the loader. Preparation expects
 usable numeric features and sufficient data for stratification. The loader
 checks target presence and missingness; it does not perform a general CSV schema
 audit. The three original supplied files remain the only supported datasets.
