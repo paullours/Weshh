@@ -4,9 +4,9 @@ University project by **Paul and Lorenzo**.
 
 The finished application will let a user select one of three supplied datasets
 and one of three classification models, then train and evaluate the model.
-This branch implements **Issue #2: dataset loading and inspection**. Running
+Issues #2–#4 provide dataset inspection, preparation and classifier selection. Running
 `main.py` demonstrates the summaries for all three supplied datasets before
-cleaning. Menus, cleaning, training and evaluation belong to later Issues.
+cleaning. The complete interactive training and evaluation workflow is still pending.
 
 ## Install and run
 
@@ -47,6 +47,8 @@ Weshh/
     .gitattributes
     main.py
     data_utils.py
+    data_preparation.py
+    model_selection.py
     requirements.txt
     README.md
     data/
@@ -57,7 +59,7 @@ Weshh/
 
 The CSV files are unchanged copies from the supplied PP4AI project archive.
 Their final column is `target`; missing feature values are empty fields.
-Keep the original CSVs unchanged. Later features will clean data in memory.
+Keep the original CSVs unchanged. Data preparation cleans data in memory.
 `.gitattributes` disables Git's line-ending conversion for the supplied CSVs,
 so a Windows checkout preserves their original bytes.
 Run commands from the project folder; no personal absolute paths are required.
@@ -94,6 +96,18 @@ supplied CSV filenames. It follows L1's product dictionary and key lookup
 - `display_dataset_summary(dataset_name, dataframe)` receives a name and the
   validated DataFrame returned by the loader. It prints the summary and returns
   `None` implicitly. It does not change the DataFrame or save anything to disk.
+
+`data_preparation.load_dataset(choice)` reuses this loader and accepts both
+`Iris` / `Wine` / `Breast Cancer` and `iris` / `wine` / `breast_cancer`.
+Its `summarize_dataset(dataset, dataset_name="Selected dataset")` reuses the
+required summary and adds column names and the first five rows.
+`prepare_features()` separates features from `target`; `split_and_clean_data()`
+uses a stratified 80/20 split with seed 42, fills missing features with training
+means, and fits StandardScaler on the imputed training data only. The test set
+uses the same fitted imputer and scaler. No rows are removed. Scaling currently
+applies to every prepared dataset; model-specific scaling remains for Issue #5,
+assigned to Paul. `model_selection.model_choice()` returns Logistic Regression,
+Decision Tree or KNN through its existing terminal prompt.
 
 Cell numbers below are zero-based positions in Paul's personal notebooks, not
 execution numbers. Examples included in a notebook do not prove that Paul
@@ -180,7 +194,14 @@ For a quick manual missing-file check, run this from the project root:
 python -c "from data_utils import load_dataset; load_dataset('iris', 'folder_that_does_not_exist')"
 ```
 
-Status of the official Section 11 checklist (all 14 checks):
+Integration cleanup checks (Python 3.13.0, pandas 3.0.6, scikit-learn 1.9.1):
+34 temporary check groups passed, including both dataset-name styles, invalid
+names, file errors, complete summaries, reproducible training-only preprocessing,
+existing prompt retries and `main.py`. All nine dataset/model smoke tests trained
+and predicted without warnings. The CSVs still match the original ZIP. These
+checks exercise functions independently; the final interactive workflow is pending.
+
+Historical Issue #2 status of the official Section 11 checklist (all 14 checks):
 
 | Check | Status for Issue #2 |
 | --- | --- |
@@ -200,15 +221,17 @@ Status of the official Section 11 checklist (all 14 checks):
 | 14. Students can explain code and results | Explanation provided; Paul and Lorenzo must demonstrate understanding |
 
 Limitations: run from the repository root; the summary function expects a
-DataFrame validated by the loader. Feature missing values remain in memory
-unchanged. There is no cleaning strategy, scaling, split, model, prediction,
-accuracy, menu, repeat/exit handling, or optional interface in this PR. The loader
+DataFrame validated by the loader. `main.py` only inspects the datasets; it does
+not call preparation or classifier selection. The full training/evaluation
+workflow and repeat/exit handling remain for later Issues. Preparation expects
+usable numeric features and sufficient data for stratification. The loader
 checks target presence and missingness; it does not perform a general CSV schema
 audit. The three original supplied files remain the only supported datasets.
 
-Codex helped prepare Issues, the project setup, and Issue #2's loading functions,
-explanations and checks. Its suggestions were compared with all 14 sections of
-the official assignment, the dataset README, and Paul's personal L1-L4 copies.
+Codex helped prepare Issues, the project setup, Issue #2's loading functions,
+and the integration adapters, explanations and checks. Its suggestions were
+compared with all 14 sections of the official assignment, the dataset README,
+and Paul's personal L1-L4 copies.
 The verification notes describe executed checks; both students still need to
 review and explain these changes before merging.
 
