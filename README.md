@@ -101,13 +101,18 @@ supplied CSV filenames. It follows L1's product dictionary and key lookup
 `Iris` / `Wine` / `Breast Cancer` and `iris` / `wine` / `breast_cancer`.
 Its `summarize_dataset(dataset, dataset_name="Selected dataset")` reuses the
 required summary and adds column names and the first five rows.
-`prepare_features()` separates features from `target`; `split_and_clean_data()`
+`prepare_features()` separates features from `target`; `split_and_clean_data(X, y, model)`
 uses a stratified 80/20 split with seed 42, fills missing features with training
-means, and fits StandardScaler on the imputed training data only. The test set
-uses the same fitted imputer and scaler. No rows are removed. Scaling currently
-applies to every prepared dataset; model-specific scaling remains for Issue #5,
-assigned to Paul. `model_selection.model_choice()` returns Logistic Regression,
-Decision Tree or KNN through its existing terminal prompt.
+means, and scales features only for Logistic Regression and KNN. StandardScaler
+puts features on comparable scales for Logistic Regression's optimization and
+regularization and KNN's distance calculations. Decision Trees use imputed,
+unscaled features. The imputer and, when used, scaler learn from training features
+only; test features use the same fitted objects. No rows are removed.
+For Issue #7, call `model = model_choice()` before
+`split_and_clean_data(X, y, model)`: the new required argument is the classifier
+object, not a name or menu number. The four return values remain
+`X_train, X_test, y_train, y_test`. `model_selection.model_choice()` returns
+Logistic Regression, Decision Tree or KNN through its existing terminal prompt.
 
 Cell numbers below are zero-based positions in Paul's personal notebooks, not
 execution numbers. Examples included in a notebook do not prove that Paul
@@ -200,6 +205,15 @@ names, file errors, complete summaries, reproducible training-only preprocessing
 existing prompt retries and `main.py`. All nine dataset/model smoke tests trained
 and predicted without warnings. The CSVs still match the original ZIP. These
 checks exercise functions independently; the final interactive workflow is pending.
+
+Issue #5 checks (same Python and library versions): all nine dataset/model
+combinations trained and predicted without warnings. Independent numerical
+checks verified training-mean imputation, model-specific scaling, reproducible
+splits, finite features, dimensions and row/label alignment. Fit-call inspection
+and changes to test features confirmed training-only learning and reuse of the
+training settings on test features. Existing functions and `main.py` passed;
+all three CSVs remained byte-for-byte unchanged and matched the supplied ZIP.
+These were independent smoke tests, not the final interactive workflow.
 
 Historical Issue #2 status of the official Section 11 checklist (all 14 checks):
 

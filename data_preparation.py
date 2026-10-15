@@ -2,6 +2,8 @@ from data_utils import display_dataset_summary, load_dataset as load_supplied_da
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 
 
 def dataset_choice():
@@ -39,7 +41,8 @@ def prepare_features(dataset):
     return X, y
 
 
-def split_and_clean_data(X, y):
+def split_and_clean_data(X, y, model):
+    """Split and impute features, scaling for the selected classifier object."""
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
         test_size=0.2,
@@ -51,9 +54,10 @@ def split_and_clean_data(X, y):
     X_train = imputer.fit_transform(X_train)
     X_test = imputer.transform(X_test)
 
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
+    if isinstance(model, (LogisticRegression, KNeighborsClassifier)):
+        scaler = StandardScaler()
+        X_train = scaler.fit_transform(X_train)
+        X_test = scaler.transform(X_test)
 
     print("\nTraining rows:", len(X_train))
     print("Test rows:", len(X_test))
