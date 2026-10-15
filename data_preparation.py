@@ -1,4 +1,4 @@
-import pandas as pd
+from data_utils import display_dataset_summary, load_dataset as load_supplied_dataset
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
@@ -17,28 +17,18 @@ def dataset_choice():
 
 
 def load_dataset(choice):
-    paths = {
-        "Iris": "data/iris.csv",
-        "Wine": "data/wine.csv",
-        "Breast Cancer": "data/breast_cancer.csv"
+    dataset_names = {
+        "Iris": "iris",
+        "Wine": "wine",
+        "Breast Cancer": "breast_cancer"
     }
 
-    file_path = paths[choice]
-
-    try:
-        return pd.read_csv(file_path)
-    except FileNotFoundError:
-        print("Dataset not found.")
-        return None
+    return load_supplied_dataset(dataset_names.get(choice, choice))
 
 
-def summarize_dataset(dataset):
-    print("\n--- Dataset Summary ---")
-    print("Number of rows:", len(dataset))
-    print("Number of columns:", len(dataset.columns))
-    print("\nColumns:", dataset.columns.tolist())
-    print("\nMissing values:")
-    print(dataset.isna().sum())
+def summarize_dataset(dataset, dataset_name="Selected dataset"):
+    display_dataset_summary(dataset_name, dataset)
+    print("\nColumn names:", dataset.columns.tolist())
     print("\nFirst 5 rows:")
     print(dataset.head())
 
