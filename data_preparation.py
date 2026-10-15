@@ -8,14 +8,21 @@ from sklearn.neighbors import KNeighborsClassifier
 
 def dataset_choice():
     while True:
-        choice = input(
-            "Choose a dataset (Iris, Wine, Breast Cancer): "
-        ).strip()
+        print("\n--- Choose a Dataset ---")
+        print("1. Iris")
+        print("2. Wine")
+        print("3. Breast Cancer")
 
-        if choice in ["Iris", "Wine", "Breast Cancer"]:
-            return choice
+        choice = input("Enter your choice (1-3): ").strip()
+
+        if choice == "1":
+            return "iris"
+        elif choice == "2":
+            return "wine"
+        elif choice == "3":
+            return "breast_cancer"
         else:
-            print("Invalid choice. Please try again.")
+            print("Invalid choice. Please insert 1, 2 or 3.")
 
 
 def load_dataset(choice):
